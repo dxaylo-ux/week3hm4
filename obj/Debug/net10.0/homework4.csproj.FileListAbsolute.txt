@@ -17,3 +17,4 @@ C:\Users\BEHRUZ\Desktop\dotnet 2\week 3\homework4\obj\Debug\net10.0\refint\homew
 C:\Users\BEHRUZ\Desktop\dotnet 2\week 3\homework4\obj\Debug\net10.0\homework4.pdb
 C:\Users\BEHRUZ\Desktop\dotnet 2\week 3\homework4\obj\Debug\net10.0\homework4.genruntimeconfig.cache
 C:\Users\BEHRUZ\Desktop\dotnet 2\week 3\homework4\obj\Debug\net10.0\ref\homework4.dll
+C:\Users\BEHRUZ\Desktop\dotnet 2\week 3\homework4\obj\Debug\net10.0\homework4.sourcelink.json

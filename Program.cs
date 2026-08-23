@@ -1,63 +1,92 @@
-﻿var service = new MoviesService();
+﻿using System;
+
+var service = new MoviesService();
 
 while (true)
 {
-    System.Console.WriteLine("============================================================");
-    System.Console.WriteLine(@"1-Show all movies
-2-Add new movies
-3-Update movies description
-4-Delete movies
-0-Exit");
+    Console.WriteLine("=================================================");
+    Console.WriteLine("1. Show all movies");
+    Console.WriteLine("2. Add movie");
+    Console.WriteLine("3. Update movie");
+    Console.WriteLine("4. Delete movie");
+    Console.WriteLine("0. Exit");
+    Console.WriteLine("=================================================");
 
-System.Console.WriteLine("============================================================");
+    var action = Console.ReadLine();
 
-var action = Console.ReadLine();
+    switch (action)
+    {
+           
+        case "1":
+            var movies = service.GetMovies();
 
-switch (action)
-{
-    case "1":
-        service.ShowAllMovies();
-        break;
+            if (movies.Count == 0)
+          {
+            Console.WriteLine("No movies found");
+          }
+            else
+          {
+            foreach (var movie in movies)
+          {
+            Console.WriteLine($"{movie.Id} | {movie.Titel} | {movie.Director} | {movie.Yaer}");
+          }
 
-    case "2":
-        Console.Write("Enter movie title: ");
-        var titel = Console.ReadLine();
+          }
+            break;
 
-        Console.Write("Enter director: ");
-        var director = Console.ReadLine();
+        case "2":
+            Console.Write("Enter title: ");
+            var title = Console.ReadLine()!;
 
-        Console.Write("Enter year: ");
-        var year = Convert.ToInt32(Console.ReadLine());
+            Console.Write("Enter director: ");
+            var director = Console.ReadLine()!;
 
-        service.AddNewMovies(titel, director, year);
-        break;
+            Console.Write("Enter year: ");
+            var year = int.Parse(Console.ReadLine());
 
-    case "3":
-        Console.Write("Enter movie id: ");
-        var id = Convert.ToInt32(Console.ReadLine());
+            var newMovie = new Movie
+            {
+                Titel = title,
+                Director = director,
+                Yaer = year
+            };
 
-        Console.Write("Enter new movie title: ");
-        var newTitel = Console.ReadLine();
+            service.AddNewMovie(newMovie);
+            break;
 
-        Console.Write("Enter new director: ");
-        var newDirector = Console.ReadLine();
+        case "3":
+            Console.Write("Enter movie id: ");
+            var updateId = int.Parse(Console.ReadLine());
 
-        Console.Write("Enter new year: ");
-        var newYear = Convert.ToInt32(Console.ReadLine());
+            Console.Write("Enter new title: ");
+            var newTitle = Console.ReadLine();
 
-        service.UpdateMovies(id, newTitel, newDirector, newYear);
-        break;
+            Console.Write("Enter new director: ");
+            var newDirector = Console.ReadLine();
 
-    case "4":
-        Console.Write("Enter movie id: ");
-        var idd = Convert.ToInt32(Console.ReadLine());
+            Console.Write("Enter new year: ");
+            var newYear = int.Parse(Console.ReadLine());
 
-        service.DeleteMovies(idd);
-        break;
+            var updateMovie = new Movie
+            {
+                Id = updateId,
+                Titel = newTitle,
+                Director = newDirector,
+                Yaer = newYear
+            };
 
-    case "5":
-        return;
-}
+            service.UpdateMovie(updateMovie);
+            break;
 
+        case "4":
+            Console.Write("Enter movie id: ");
+            var deleteId = int.Parse(Console.ReadLine()!);
+
+            service.DeleteMovie(deleteId);
+            break;
+
+        case "0":
+            return;
+    }
 
 }
