@@ -1,49 +1,25 @@
+using Dapper;
 using Npgsql;
 
 public class MoviesService
 {
-    private string connectionString =   "Host=localhost;Port=5432;Database=Movies;Username=postgres;Password=1234";
+    private string connectionString ="Host=localhost;Port=5432;Database=Movies;Username=postgres;Password=1234";
 
-    public List<Movie> GetMovies()
+    public List<Movie> GetMoviesDapper()
     {
-        List<Movie> movies = new();
+        var conn = new NpgsqlConnection(connectionString);
+        var quary = "select * from movies";
+        var data = conn.Query<Movie>(quary).ToList();
+        return data;
 
-        using var conn = new NpgsqlConnection(connectionString);
-        conn.Open();
-
-        var cmd = new NpgsqlCommand("select * from movies", conn);
-        var data = cmd.ExecuteReader();
-
-        while (data.Read())
-        {
-            var movie = new Movie()
-            {
-                Id = data.GetInt32(0),
-                Titel = data.GetString(1),
-                Director = data.GetString(2),
-                Yaer = data.GetInt32(3)
-            };
-
-            movies.Add(movie);
-        }
-
-        return movies;
     }
 
-    public void AddNewMovie(Movie movie)
+    public void AddNewMovieDapper(Movie movie)
     {
         using var conn = new NpgsqlConnection(connectionString);
         conn.Open();
 
-        var command = new NpgsqlCommand(
-            "insert into movies(titel, director, yaer) values(@titel, @director, @yaer)",
-            conn);
-
-        command.Parameters.AddWithValue("titel", movie.Titel);
-        command.Parameters.AddWithValue("director", movie.Director);
-        command.Parameters.AddWithValue("yaer", movie.Yaer);
-
-        var res = command.ExecuteNonQuery();
+        var res = conn.Execute("insert into movies(titel, director, yaer) values(@titel, @director, @yaer)" , new {movie.Titel, movie.Director, movie.Yaer});
 
         if (res > 0)
             Console.WriteLine("successfully added");
@@ -51,21 +27,14 @@ public class MoviesService
             Console.WriteLine("smth went wrong");
     }
 
-    public void UpdateMovie(Movie movie)
+
+
+    public void UpdateMovieDapper(Movie movie)
     {
         using var conn = new NpgsqlConnection(connectionString);
         conn.Open();
 
-        var command = new NpgsqlCommand(
-            "update movies set titel=@titel, director=@director, yaer=@yaer where id=@id",
-            conn);
-
-        command.Parameters.AddWithValue("id", movie.Id);
-        command.Parameters.AddWithValue("titel", movie.Titel);
-        command.Parameters.AddWithValue("director", movie.Director);
-        command.Parameters.AddWithValue("yaer", movie.Yaer);
-
-        var res = command.ExecuteNonQuery();
+        var res = conn.Execute("update movies set titel=@titel, director=@director, yaer=@yaer where id=@id", new {titel = movie.Titel, director = movie.Director, yaer = movie.Yaer});
 
         if (res > 0)
             Console.WriteLine("updated");
@@ -73,18 +42,12 @@ public class MoviesService
             Console.WriteLine("smth went wrong");
     }
 
-    public void DeleteMovie(int id)
+    public void DeleteMovieDapper(int id)
     {
         using var conn = new NpgsqlConnection(connectionString);
         conn.Open();
 
-        var command = new NpgsqlCommand(
-            "delete from movies where id=@id",
-            conn);
-
-        command.Parameters.AddWithValue("id", id);
-
-        var res = command.ExecuteNonQuery();
+        var res = conn.Execute("delete from movies where id=@id" , id);
 
         if (res > 0)
             Console.WriteLine("deleted");
